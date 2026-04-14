@@ -7,9 +7,9 @@ import {
   Param,
   Patch,
   Post,
-} from "@nestjs/common";
-import { ItemService } from "./item.service";
-import { CreateItemDto } from "./dto/create-item.dto";
+} from '@nestjs/common';
+import { ItemService } from './item.service';
+import { CreateItemDto } from './dto/create-item.dto';
 
 @Controller()
 export class ItemController {
@@ -23,13 +23,13 @@ export class ItemController {
 
   @HttpCode(200)
   @Get()
-  getOneItem(@Param("id") id: string) {
+  getOneItem(@Param('id') id: string) {
     return this.itemService.getOneItem(+id);
   }
 
   @HttpCode(201)
   @Patch()
-  updateItem(@Param("id") id: string, @Body() item: Partial<CreateItemDto>) {
+  updateItem(@Param('id') id: string, @Body() item: Partial<CreateItemDto>) {
     return this.itemService.updateItem(+id, item);
   }
 
@@ -41,7 +41,7 @@ export class ItemController {
 
   @HttpCode(200)
   @Delete()
-  deleteItem(@Param("id") id: string) {
+  deleteItem(@Param('id') id: string) {
     return this.itemService.deleteItem(+id);
   }
 }
