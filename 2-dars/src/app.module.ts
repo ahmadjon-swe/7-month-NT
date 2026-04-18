@@ -1,26 +1,25 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { SequelizeModule } from "@nestjs/sequelize";
-import { ArticleModule } from './article/article.module';
-import { AuthModule } from './auth/auth.module';
+import { ArticleModule } from './modules/article/article.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { TypeOrmModule } from "@nestjs/typeorm";
 
 
 @Module({
   imports: [
     ConfigModule.forRoot({envFilePath: ".env", isGlobal: true}),
-    SequelizeModule.forRoot({
-      dialect: "postgres",
+    TypeOrmModule.forRoot({
+      type: "postgres",
       port: 5432,
       username: "postgres",
       host: "localhost",
       database: String(process.env.DB_NAME as string),
       password: String(process.env.DB_PASSWORD as string),
-      // models: [Auth, Article],
-      autoLoadModels: true,
+      entities: [AuthModule], 
       synchronize: true,
       logging: false  
     }),
-    ArticleModule,
+    // ArticleModule,
     AuthModule
   ],
   controllers: [],

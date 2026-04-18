@@ -13,13 +13,3 @@ export class CreateAuthDto {
   @Length(6, 18)
   password!: string;
 }
-
-export class UpdateAuthDto {
-  @IsString()
-  @IsEmail()
-  email!: string;
-
-  @IsString()
-  @Length(6, 18)
-  password!: string;
-}
