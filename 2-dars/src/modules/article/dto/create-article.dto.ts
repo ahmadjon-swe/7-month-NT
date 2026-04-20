@@ -10,5 +10,5 @@ export class CreateArticleDto {
   content!: string
 
   @IsNumber()
-  userId: number
+  userId!: number
 }

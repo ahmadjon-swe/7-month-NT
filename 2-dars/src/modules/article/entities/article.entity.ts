@@ -1,4 +1,4 @@
-import { BaseEntity } from "src/database/base.entity";
+import { BaseEntity } from "src/database/entities/base.entity";
 import { Column, Entity } from "typeorm";
 
 @Entity({name: "article"})
@@ -7,25 +7,17 @@ export class Article extends BaseEntity {
     type: "string",
     nullable: false
   })
-  username!: string
+  title!: string
 
   @Column({
     type: "string",
     nullable: false
   })
-  email!: string
+  content!: string
 
   @Column({
-    type: "string",
+    type: "number", 
     nullable: false
   })
-  password!: string
-
-  @Column({
-    type: "string",
-    nullable: false
-  })
-  otp!: string
-
-  
+  userId!: number
 }

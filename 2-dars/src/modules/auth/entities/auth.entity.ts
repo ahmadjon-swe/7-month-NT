@@ -1,5 +1,5 @@
-import { BaseEntity } from "src/database/base.entity";
-import { UserRole } from "src/shared/enum/roles.enum";
+import { BaseEntity } from "src/database/entities/base.entity";
+import { UserRole } from "src/shared/enums/roles.enum";
 import { Column, Entity } from "typeorm";
 
 @Entity({name: "auth"})

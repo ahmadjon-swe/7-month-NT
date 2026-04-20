@@ -4,7 +4,7 @@ import {UpdateAuthDto} from "./dto/update-auth.dto";
 import {Auth} from "./entities/auth.entity";
 import * as bcrypt from 'bcrypt'
 import { Article } from "src/modules/article/entities/article.entity";
-import { otpSender } from "src/shared/utility/node-mailer";
+import { otpSender } from "src/shared/utils/node-mailer";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { LoginAuthDto } from "./dto/login-auth.dto";
