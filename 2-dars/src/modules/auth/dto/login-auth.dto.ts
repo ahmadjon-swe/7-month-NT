@@ -1,4 +1,14 @@
-import { PickType } from '@nestjs/mapped-types';
-import { CreateAuthDto } from './create-auth.dto';
+import {ApiProperty} from "@nestjs/swagger";
+import {IsEmail, IsString, Length} from "class-validator";
 
-export class LoginAuthDto extends PickType(CreateAuthDto, ["email" , "password"]) {}
+export class LoginAuthDto {
+  @IsString()
+  @IsEmail()
+  @ApiProperty({default: "muhammadalishuhratjonov50@gmail.com"})
+  email!: string;
+
+  @IsString()
+  @Length(6, 18)
+  @ApiProperty({default: "password123"})
+  password!: string;
+}

@@ -4,20 +4,17 @@ import { Column, Entity } from "typeorm";
 @Entity({name: "article"})
 export class Article extends BaseEntity {
   @Column({
-    type: "string",
+    type: "varchar",
     nullable: false
   })
   title!: string
 
   @Column({
-    type: "string",
+    type: "varchar",
     nullable: false
   })
   content!: string
 
-  @Column({
-    type: "number", 
-    nullable: false
-  })
-  userId!: number
+  @Column()
+  backgroundImage!: string
 }

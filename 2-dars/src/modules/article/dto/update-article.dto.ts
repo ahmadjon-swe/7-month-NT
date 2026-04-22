@@ -1,4 +1,12 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateArticleDto } from './create-article.dto';
+import { ApiProperty } from "@nestjs/swagger"
+import { IsNumber, IsString, Length } from "class-validator"
 
-export class UpdateArticleDto extends PartialType(CreateArticleDto) {}
+export class UpdateArticleDto {
+  @IsString()
+  @ApiProperty({default: "Express.js or Nest.js"})
+  title?: string
+
+  @IsString()
+  @ApiProperty({default: "Express.js is easier to learn, Nesj.js is easy after you learn it."})
+  content?: string
+}

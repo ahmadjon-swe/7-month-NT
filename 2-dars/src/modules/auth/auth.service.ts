@@ -1,9 +1,7 @@
 import {BadRequestException, GatewayTimeoutException, Injectable} from "@nestjs/common";
 import {CreateAuthDto} from "./dto/create-auth.dto";
-import {UpdateAuthDto} from "./dto/update-auth.dto";
 import {Auth} from "./entities/auth.entity";
 import * as bcrypt from 'bcrypt'
-import { Article } from "src/modules/article/entities/article.entity";
 import { otpSender } from "src/shared/utils/node-mailer";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -34,14 +32,16 @@ export class AuthService {
     const hash = await bcrypt.hash(password, 14)
 
     const otpTime = Date.now()+120000
-    const otp = Array.from({length: 6}, ()=> Math.floor(Math.random()* 9)).join("")
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
     
     
     const user =  this.authRepo.create({username, email, password: hash, otp, otpTime});
 
     otpSender(otp, email)
 
-    return await this.authRepo.save(user)
+    await this.authRepo.save(user)
+
+    return {message: "Please check your email"}
   }
 
   // login
@@ -58,9 +58,9 @@ export class AuthService {
     if(!check) throw new BadRequestException("password is incorrect")
 
     const otpTime = Date.now()+120000
-    const otp = Array.from({length: 6}, ()=> Math.floor(Math.random()* 9)).join("")
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
     
-    await this.authRepo.update({otp, otpTime}, {id: foundedUser.id})
+    await this.authRepo.update({id: foundedUser.id}, {otp, otpTime})
 
     otpSender(otp, email)
 
@@ -82,9 +82,11 @@ export class AuthService {
 
     if(!chekOtp) throw new BadRequestException("wrong otp validation")
 
+    if(foundedUser.otp != otp) throw new BadRequestException("wrong otp")
+
     if(foundedUser.otpTime && Date.now()>foundedUser.otpTime) throw new GatewayTimeoutException("otp time is expired")
 
-    await this.authRepo.update({otp: "", otpTime: 0}, {id: foundedUser.id})
+    await this.authRepo.update( {id: foundedUser.id}, {otp: "", otpTime: 0})
 
     const payload = {email: foundedUser.email, role: foundedUser.role}
 
@@ -104,16 +106,18 @@ export class AuthService {
     if(!foundedUser) throw new BadRequestException("user is not exist")
 
     const otpTime = Date.now()+120000
-    const otp = Array.from({length: 6}, ()=> Math.floor(Math.random()* 9)).join("")
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    await this.authRepo.update({otp, otpTime}, {id: foundedUser.id})
+    await this.authRepo.update({id: foundedUser.id}, {otp, otpTime})
+
+    otpSender(otp, email)
 
     return {message: "we have send you email to change your password"}
   }
 
 
 
-  // forgot password veify
+  // forgot password verify
   async forgotPasswordVerify(verifyForgotPasswordAuthDto: VerifyForgotPasswordAuthDto){
     const {email, otp, password}= verifyForgotPasswordAuthDto as VerifyForgotPasswordAuthDto
     const foundedUser = await this.authRepo.findOne({
@@ -122,20 +126,21 @@ export class AuthService {
 
     if(!foundedUser) throw new BadRequestException("user is not exist")
 
+    if(foundedUser.otpTime && Date.now()>foundedUser.otpTime) throw new GatewayTimeoutException("otp time is expired")
+
     if(foundedUser.otp==="") throw new BadRequestException("Otp has not been sent, try to login")
 
     const chekOtp = /^\d{6}$/.test(otp)
 
     if(!chekOtp) throw new BadRequestException("wrong otp validation")
 
-    if(foundedUser.otpTime && Date.now()>foundedUser.otpTime) throw new GatewayTimeoutException("otp time is expired")
+    if(foundedUser.otp != otp) throw new BadRequestException("wrong otp")
 
-    await this.authRepo.update({password, otp: "", otpTime: 0}, {id: foundedUser.id})
 
-    const payload = {email: foundedUser.email, role: foundedUser.role}
+    const hash = await bcrypt.hash(password, 14)
 
-    const token = await this.jwtService.signAsync(payload)
+    await this.authRepo.update({ id: foundedUser.id },{ otp: "", otpTime: 0, password: hash });
 
-    return {message: "your password has been updated", token}
+    return {message: "your password has been updated"}
   }
 }

@@ -1,36 +1,36 @@
 import { BaseEntity } from "src/database/entities/base.entity";
-import { UserRole } from "src/shared/enums/roles.enum";
+import { RolesUser } from "src/shared/enums/roles.enum";
 import { Column, Entity } from "typeorm";
 
 @Entity({name: "auth"})
 export class Auth extends BaseEntity{
   @Column({
-    type: "string",
+    type: "varchar",
     nullable: false
   })
   username!: string
 
   @Column({
-    type: "string",
+    type: "varchar",
     nullable: false
   })
   email!: string
 
   @Column({
     type: "enum",
-    enum: UserRole,
-    default: UserRole.USER
+    enum: RolesUser,
+    default: RolesUser.USER
   })
   role!: string
 
   @Column({
-    type: "string",
+    type: "varchar",
     nullable: false
   })
   password!: string
 
   @Column({
-    type: "string",
+    type: "varchar",
     nullable: true
   })
   otp?: string
